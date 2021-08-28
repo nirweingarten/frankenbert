@@ -3,7 +3,7 @@ import pandas as pd
 from transformers import top_k_top_p_filtering
 import torch.nn.functional as F
 from IPython.display import display, HTML
-
+import torch
 
 BLOCK_SIZE = 128
 
@@ -49,11 +49,7 @@ def predict_next(model, sequence, tokenizer):
     input_ids = tokenizer.encode(sequence, return_tensors="pt").to(device)
     next_token_logits = model(input_ids.to(device))[0][:, -1, :]
     filtered_next_token_logits = top_k_top_p_filtering(next_token_logits, top_k=50, top_p=1.0)
-    # sample
     probs = F.softmax(filtered_next_token_logits, dim=-1)
-    next_token = torch.multinomial(probs, num_samples=1)
-    generated = torch.cat([input_ids, next_token], dim=-1)
-    resulting_string = tokenizer.decode(generated.tolist()[0])
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
     predictions = ['{2:.3}:\t{0}{1}'.format(sequence, tokenizer.decode(top_tokens[i]), top_probs[i]) for i in range(5)]

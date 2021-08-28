@@ -4,6 +4,7 @@ from datetime import datetime
 from transformers import AutoModelForCausalLM
 from transformers import Trainer, TrainingArguments
 import math
+import pickle
 import sys
 import utils
 import torch
@@ -13,7 +14,7 @@ from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
 
 
-def train(model_name, task, dataset_name):
+def train(model_name, task, dataset_name, num_epochs):
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
@@ -34,6 +35,7 @@ def train(model_name, task, dataset_name):
         evaluation_strategy="epoch",
         learning_rate=2e-5,
         weight_decay=0.01,
+        num_train_epochs=num_epochs
     )
     if task == 'causal':
         model = AutoModelForCausalLM.from_pretrained(model_name)
@@ -56,7 +58,7 @@ def train(model_name, task, dataset_name):
     trainer.train()
     eval_results = trainer.evaluate()
     print(f"Perplexity: {math.exp(eval_results['eval_loss']):.2f}")
-    return model
+    return model, tokenizer
 
 
 def main(raw_args):
@@ -72,16 +74,21 @@ def main(raw_args):
         '--dataset', '-d', type=str, nargs='?', help='Dataset to use. can be more than one word for *args,\n'
                                                      'for example: \'wikitext,wikitext-2-raw-v1\' will be parsed as\n'
                                                      '[\'wikitext\',\'wikitext-2-raw-v1\']')
+    parser.add_argument('--epochs', '-e', type=int, nargs='?', help='Number of training epochs', default=3)
     parser.add_argument('--save_dir', '-s', type=str, nargs='?', help='Path of dir to save model in')
 
     args = parser.parse_args(raw_args)
     assert os.path.isdir(args.save_dir)
     timestamp = datetime.now().strftime('%y%m%d%H%m')
-    save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
+    model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
                                                                      args.dataset.split(',')[0], timestamp))
-    model = train(args.model_name, args.task, args.dataset)
-    torch.save(model, save_path)
-    print('Saved model to {}'.format(save_path))
+    tokenizer_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'tokenizer', timestamp))
+    model, tokenizer = train(args.model_name, args.task, args.dataset, args.epochs)
+    torch.save(model, model_save_path)
+    print('Saved model to {}'.format(model_save_path))
+    with open(tokenizer_save_path, 'wb') as f:
+        pickle.dump(tokenizer, f)
+    print('Saved tokenizer to {}'.format(tokenizer_save_path))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))
