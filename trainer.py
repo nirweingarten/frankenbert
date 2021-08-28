@@ -46,7 +46,7 @@ def train(model_name, task, dataset_name, num_epochs):
             eval_dataset=lm_datasets["validation"],
         )
     elif task == 'MLM':
-        model = AutoModelForMaskedLM.from_pretrained(model_checkpoint)
+        model = AutoModelForMaskedLM.from_pretrained(model_name)
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm_probability=0.15)
         trainer = Trainer(
             model=model,
