@@ -1,8 +1,9 @@
 import random
 import pandas as pd
-from IPython.display import display, HTML
-from transformers import AutoModelWithLMHead, AutoTokenizer, top_k_top_p_filtering
+from transformers import top_k_top_p_filtering
 import torch.nn.functional as F
+from IPython.display import display, HTML
+
 
 BLOCK_SIZE = 128
 
@@ -21,9 +22,6 @@ def show_random_elements(dataset, num_examples=10):
         if isinstance(typ, ClassLabel):
             df[column] = df[column].transform(lambda i: typ.names[i])
     display(HTML(df.to_html()))
-
-def tokenize_function(examples):
-    return tokenizer(examples["text"])
 
 def group_texts(examples):
     # Concatenate all texts.
@@ -72,6 +70,6 @@ def mlm(model, sequence, tokenizer):
     probs = F.softmax(filtered_mask_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    resutls = ['{0:.3}:\t{1}'.format(top_probs[i], sequence.replace(tokenizer.mask_token,
+    results = ['{0:.3}:\t{1}'.format(top_probs[i], sequence.replace(tokenizer.mask_token,
                '==' + tokenizer.decode(top_tokens[i]) + ' ==')) for i in range(5)]
     return results
