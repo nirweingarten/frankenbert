@@ -84,7 +84,7 @@ def main(raw_args):
     model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
                                                                      args.dataset.split(',')[0], timestamp))
     tokenizer_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'tokenizer', timestamp))
-    model, tokenizer = train(args.model_name, args.task, args.dataset, args.epochs)
+    model, tokenizer = train(args.model_name, args.task, args.dataset, args.epochs, args.column_name)
     torch.save(model, model_save_path)
     print('Saved model to {}'.format(model_save_path))
     with open(tokenizer_save_path, 'wb') as f:
