@@ -14,7 +14,7 @@ from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
 
 
-def train(model_name, task, dataset_name, num_epochs, column = "text"):
+def train(model_name, task, dataset_name, num_epochs, column="text"):
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
