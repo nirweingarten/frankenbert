@@ -14,7 +14,7 @@ from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
 
 
-def train(model_name, task, dataset_name, num_epochs, column_name="text"):
+def train(model_name, task, dataset_name, num_epochs, column_name):
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
@@ -76,7 +76,7 @@ def main(raw_args):
                                                      '[\'wikitext\',\'wikitext-2-raw-v1\']')
     parser.add_argument('--epochs', '-e', type=int, nargs='?', help='Number of training epochs', default=3)
     parser.add_argument('--save_dir', '-s', type=str, nargs='?', help='Path of dir to save model in')
-    parser.add_argument('--column_name', '-cn', type=str, nargs='?', help='The name of the text column in the dataset')
+    parser.add_argument('--column_name', '-cn', type=str, nargs='?', help='The name of the text column in the dataset', default='text')
 
     args = parser.parse_args(raw_args)
     assert os.path.isdir(args.save_dir)
