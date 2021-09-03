@@ -14,7 +14,7 @@ from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
 
 
-def train(model_name, task, dataset_name, num_epochs, column="text"):
+def train(model_name, task, dataset_name, num_epochs, column_name="text"):
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
@@ -22,8 +22,8 @@ def train(model_name, task, dataset_name, num_epochs, column="text"):
 
     datasets = load_dataset(*dataset_name.split(','))
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
-    tokenized_datasets = datasets.map(lambda examples: tokenizer(examples[column]),
-                                      batched=True, num_proc=2, remove_columns=[column])
+    tokenized_datasets = datasets.map(lambda examples: tokenizer(examples[column_name]),
+                                      batched=True, num_proc=2, remove_columns=[column_name])
     lm_datasets = tokenized_datasets.map(
                         utils.group_texts,
                         batched=True,
