@@ -39,13 +39,12 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
     )
     if task == 'causal':
         model = AutoModelForCausalLM.from_pretrained(model_name)
-        try:
+            try:
             trainer = Trainer(
                 model=model,
                 args=training_args,
                 train_dataset=lm_datasets["train"],
                 eval_dataset=lm_datasets["validation"],
-                data_collator=data_collator
             )
         except:
             trainer = Trainer(
@@ -53,8 +52,7 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
                 args=training_args,
                 train_dataset=lm_datasets["train"],
                 eval_dataset=lm_datasets["test"],
-                data_collator=data_collator
-            )  
+            ) 
     elif task == 'MLM':
         model = AutoModelForMaskedLM.from_pretrained(model_name)
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm_probability=0.15)
