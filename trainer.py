@@ -48,13 +48,22 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
     elif task == 'MLM':
         model = AutoModelForMaskedLM.from_pretrained(model_name)
         data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm_probability=0.15)
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=lm_datasets["train"],
-            eval_dataset=lm_datasets["validation"],
-            data_collator=data_collator
-        )
+        try:
+            trainer = Trainer(
+                model=model,
+                args=training_args,
+                train_dataset=lm_datasets["train"],
+                eval_dataset=lm_datasets["validation"],
+                data_collator=data_collator
+            )
+        except:
+            trainer = Trainer(
+                model=model,
+                args=training_args,
+                train_dataset=lm_datasets["train"],
+                eval_dataset=lm_datasets["test"],
+                data_collator=data_collator
+            )  
     trainer.train()
     eval_results = trainer.evaluate()
     print(f"Perplexity: {math.exp(eval_results['eval_loss']):.2f}")
