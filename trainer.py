@@ -14,7 +14,7 @@ from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
 
 
-def train(model_name, task, dataset_name, num_epochs):
+def train(model_name, task, dataset_name, num_epochs, column_name):
     if torch.cuda.is_available():
         device = torch.device('cuda')
     else:
@@ -22,8 +22,8 @@ def train(model_name, task, dataset_name, num_epochs):
 
     datasets = load_dataset(*dataset_name.split(','))
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
-    tokenized_datasets = datasets.map(lambda examples: tokenizer(examples["text"]),
-                                      batched=True, num_proc=2, remove_columns=["text"])
+    tokenized_datasets = datasets.map(lambda examples: tokenizer(examples[column_name]),
+                                      batched=True, num_proc=2, remove_columns=[column_name])
     lm_datasets = tokenized_datasets.map(
                         utils.group_texts,
                         batched=True,
@@ -76,14 +76,15 @@ def main(raw_args):
                                                      '[\'wikitext\',\'wikitext-2-raw-v1\']')
     parser.add_argument('--epochs', '-e', type=int, nargs='?', help='Number of training epochs', default=3)
     parser.add_argument('--save_dir', '-s', type=str, nargs='?', help='Path of dir to save model in')
-
+    parser.add_argument('--column_name', '-cn', type=str, nargs='?', help='The name of the text column in the dataset',
+                        default='text')
     args = parser.parse_args(raw_args)
     assert os.path.isdir(args.save_dir)
     timestamp = datetime.now().strftime('%y%m%d%H%m')
     model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
                                                                      args.dataset.split(',')[0], timestamp))
     tokenizer_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'tokenizer', timestamp))
-    model, tokenizer = train(args.model_name, args.task, args.dataset, args.epochs)
+    model, tokenizer = train(args.model_name, args.task, args.dataset, args.epochs, args.column_name)
     torch.save(model, model_save_path)
     print('Saved model to {}'.format(model_save_path))
     with open(tokenizer_save_path, 'wb') as f:
