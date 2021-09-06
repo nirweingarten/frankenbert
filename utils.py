@@ -25,7 +25,7 @@ def show_random_elements(dataset, num_examples=10):
 
 def group_texts(examples):
     # Concatenate all texts.
-    concatenated_examples = {k: sum([examples[k]], []) for k in examples.keys()}
+    concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
     total_length = len(concatenated_examples[list(examples.keys())[0]])
     total_length = (total_length // BLOCK_SIZE) * BLOCK_SIZE
     # Split by chunks of max_len.
