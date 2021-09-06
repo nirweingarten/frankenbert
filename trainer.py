@@ -39,7 +39,7 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
     )
     if task == 'causal':
         model = AutoModelForCausalLM.from_pretrained(model_name)
-            try:
+        try:
             trainer = Trainer(
                 model=model,
                 args=training_args,
