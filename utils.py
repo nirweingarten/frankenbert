@@ -40,11 +40,22 @@ def group_texts(examples):
     result["labels"] = result["input_ids"].copy() # the model knows to shift the labels by itself
     return result
 
-def generate(model, prompt, tokenizer):
+def frankenstein(implantee, donor, layer_nums):
+    new_state_dict = implantee.state_dict().copy()
+    donor_state_dict = donor.state_dict().copy()
+    for layer_num in layer_nums:
+        keys = [key for key in implantee.state_dict().keys()
+                if key.startswith(f'transformer.h.{layer_num}')]
+        for key in keys:
+            new_state_dict[key] = donor_state_dict[key]
+    implantee.load_state_dict(new_state_dict)
+    return implantee
+
+def generate(model, prompt, tokenizer, top_k=60, temp=1):
     device = model.device
     inputs = tokenizer.encode(prompt, add_special_tokens=False, return_tensors="pt").to(device)
     prompt_length = len(tokenizer.decode(inputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
-    outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=60)
+    outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=top_k, temperature=temp)
     generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
     return generated
 
