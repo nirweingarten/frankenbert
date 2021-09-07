@@ -9,6 +9,7 @@ import sys
 import utils
 import torch
 from datasets import load_dataset
+import datasets
 from transformers import DataCollatorForLanguageModeling
 from transformers import AutoModelForMaskedLM
 from transformers import AutoTokenizer
@@ -20,15 +21,26 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
     else:
         device = torch.device('cpu')
 
-    datasets = load_dataset(*dataset_name.split(','))
+    dataset = load_dataset(*dataset_name.split(','))
+    if 'validation' not in dataset:
+        if 'test' not in dataset:
+            train_test_split = dataset['train'].train_test_split(test_size=0.1)
+            dataset = datasets.DatasetDict({
+                'train': train_test_split['train'],
+                'validation': train_test_split['test']})
+        else:
+            dataset = datasets.DatasetDict({
+                'train': dataset['train'],
+                'validation': dataset['test']})
+
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
-    tokenized_datasets = datasets.map(lambda examples: tokenizer(examples[column_name]),
+    tokenized_datasets = dataset.map(lambda examples: tokenizer(examples[column_name]),
                                       batched=True, num_proc=2, remove_columns=[column_name])
     lm_datasets = tokenized_datasets.map(
                         utils.group_texts,
                         batched=True,
                         batch_size=1000,
-                        num_proc=2,
+                        num_proc=2
                         )
     training_args = TrainingArguments(
         "test-clm",
@@ -43,7 +55,7 @@ def train(model_name, task, dataset_name, num_epochs, column_name):
             model=model,
             args=training_args,
             train_dataset=lm_datasets["train"],
-            eval_dataset=lm_datasets["validation"],
+            eval_dataset=lm_datasets["validation"]
         )
     elif task == 'MLM':
         model = AutoModelForMaskedLM.from_pretrained(model_name)
