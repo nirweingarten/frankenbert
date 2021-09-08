@@ -4,6 +4,7 @@ from transformers import top_k_top_p_filtering
 import torch.nn.functional as F
 from IPython.display import display, HTML
 import torch
+import copy
 
 BLOCK_SIZE = 128
 
@@ -25,6 +26,10 @@ def show_random_elements(dataset, num_examples=10):
 
 def group_texts(examples):
     # Concatenate all texts.
+    ## DEBUG
+    # rm_features = [f for f in examples.keys() if f not in ['attention_mask', 'input_ids']]
+    # _ = [examples.pop(f) for f in rm_features]
+    ##
     concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
     total_length = len(concatenated_examples[list(examples.keys())[0]])
     total_length = (total_length // BLOCK_SIZE) * BLOCK_SIZE
@@ -36,15 +41,28 @@ def group_texts(examples):
     result["labels"] = result["input_ids"].copy() # the model knows to shift the labels by itself
     return result
 
-def generate(model, prompt, tokenizer):
+def frankenstein(implantee, donor, layer_nums):
+    new_state_dict = copy.deepcopy(implantee.state_dict())
+    donor_state_dict = copy.deepcopy(donor.state_dict())
+    monster = copy.deepcopy(implantee)
+    for layer_num in layer_nums:
+        keys = [key for key in implantee.state_dict().keys()
+                if key.startswith(f'transformer.h.{layer_num}')
+                or key.startswith(f'roberta.encoder.layer.{layer_num}')]
+        for key in keys:
+            new_state_dict[key] = donor_state_dict[key]
+    monster.load_state_dict(new_state_dict)
+    return monster
+
+def generate(model, prompt, tokenizer, top_k=60, temp=1):
     device = model.device
     inputs = tokenizer.encode(prompt, add_special_tokens=False, return_tensors="pt").to(device)
     prompt_length = len(tokenizer.decode(inputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
-    outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=60)
+    outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=top_k, temperature=temp)
     generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
     return generated
 
-def predict_next(model, sequence, tokenizer):
+def predict_next(model, sequence, tokenizer, num_preds=3):
     device = model.device
     input_ids = tokenizer.encode(sequence, return_tensors="pt").to(device)
     next_token_logits = model(input_ids.to(device))[0][:, -1, :]
@@ -52,8 +70,11 @@ def predict_next(model, sequence, tokenizer):
     probs = F.softmax(filtered_next_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    predictions = ['{2:.3}:\t{0}{1}'.format(sequence, tokenizer.decode(top_tokens[i]), top_probs[i]) for i in range(5)]
-    return predictions
+    predictions = ['{0:.3}:\t{1}\t\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(num_preds)]
+    string = ''
+    for p in predictions:
+        string += p
+    return string
 
 def mlm(model, sequence, tokenizer):
     # {tokenizer.mask_token}
@@ -66,6 +87,9 @@ def mlm(model, sequence, tokenizer):
     probs = F.softmax(filtered_mask_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    results = ['{0:.3}:\t{1}'.format(top_probs[i], sequence.replace(tokenizer.mask_token,
-               '==' + tokenizer.decode(top_tokens[i]) + ' ==')) for i in range(5)]
-    return results
+    results = ['{0:.3}:\t{1}\t\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(5)]
+    string = ''
+    for p in results:
+        string += p
+    return string
+
