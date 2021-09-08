@@ -4,6 +4,7 @@ from transformers import top_k_top_p_filtering
 import torch.nn.functional as F
 from IPython.display import display, HTML
 import torch
+import copy
 
 BLOCK_SIZE = 128
 
@@ -43,14 +44,15 @@ def group_texts(examples):
 def frankenstein(implantee, donor, layer_nums):
     new_state_dict = implantee.state_dict().copy()
     donor_state_dict = donor.state_dict().copy()
+    monster = copy.copy(implantee)
     for layer_num in layer_nums:
         keys = [key for key in implantee.state_dict().keys()
                 if key.startswith(f'transformer.h.{layer_num}')
                 or key.startswith(f'roberta.encoder.layer.{layer_num}')]
         for key in keys:
             new_state_dict[key] = donor_state_dict[key]
-    implantee.load_state_dict(new_state_dict)
-    return implantee
+    monster.load_state_dict(new_state_dict)
+    return monster
 
 def generate(model, prompt, tokenizer, top_k=60, temp=1):
     device = model.device
