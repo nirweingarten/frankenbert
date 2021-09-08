@@ -87,6 +87,9 @@ def mlm(model, sequence, tokenizer):
     probs = F.softmax(filtered_mask_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    results = ['{0:.3}:\t{1}'.format(top_probs[i], sequence.replace(tokenizer.mask_token,
-               '==' + tokenizer.decode(top_tokens[i]) + ' ==')) for i in range(5)]
-    return results
+    results = ['{0:.3}:\t{1}\t\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(5)]
+    string = ''
+    for p in results:
+        string += p
+    return string
+

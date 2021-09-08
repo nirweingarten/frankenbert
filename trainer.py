@@ -97,7 +97,7 @@ def main(raw_args):
     assert os.path.isdir(args.save_dir)
     assert os.path.isdir(args.log_dir)
     timestamp = datetime.now().strftime('%y%m%d%H%m')
-    model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
+    model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name.replace('/','-'),
                                                                      args.dataset.split(',')[0], timestamp))
     tokenizer_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'tokenizer', timestamp))
     eval_save_path = os.path.join(args.log_dir, '{0}_{1}_{2}.pkl'.format(args.model_name.replace('/','-'),
