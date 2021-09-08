@@ -74,7 +74,7 @@ def predict_next(model, sequence, tokenizer):
     string = ''
     for p in predictions:
         string += p
-    return predictions
+    return string
 
 def mlm(model, sequence, tokenizer):
     # {tokenizer.mask_token}
