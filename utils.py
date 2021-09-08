@@ -62,7 +62,7 @@ def generate(model, prompt, tokenizer, top_k=60, temp=1):
     generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
     return generated
 
-def predict_next(model, sequence, tokenizer):
+def predict_next(model, sequence, tokenizer, num_preds=3):
     device = model.device
     input_ids = tokenizer.encode(sequence, return_tensors="pt").to(device)
     next_token_logits = model(input_ids.to(device))[0][:, -1, :]
@@ -70,7 +70,7 @@ def predict_next(model, sequence, tokenizer):
     probs = F.softmax(filtered_next_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    predictions = ['{0:.3}:\t{1}\n'.format(top_probs[i], tokenizer.decode(top_tokens[i])) for i in range(5)]
+    predictions = ['{0:.3}:\t{1}\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(num_preds)]
     string = ''
     for p in predictions:
         string += p
