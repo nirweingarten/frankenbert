@@ -100,8 +100,10 @@ def main(raw_args):
     model_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name,
                                                                      args.dataset.split(',')[0], timestamp))
     tokenizer_save_path = os.path.join(args.save_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'tokenizer', timestamp))
-    eval_save_path = os.path.join(args.log_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'eval', timestamp))
-    metrics_save_path = os.path.join(args.log_dir, '{0}_{1}_{2}.pkl'.format(args.model_name, 'metrics', timestamp))
+    eval_save_path = os.path.join(args.log_dir, '{0}_{1}_{2}.pkl'.format(args.model_name.replace('/','-'),
+                                                                         'eval', timestamp))
+    metrics_save_path = os.path.join(args.log_dir, '{0}_{1}_{2}.pkl'.format(args.model_name.replace('/','-'),
+                                                                            'metrics', timestamp))
     model, tokenizer, metrics, eval_results = train(args.model_name, args.task, args.dataset,
                                                     args.epochs, args.column_name, args.log_dir)
     torch.save(model, model_save_path)
