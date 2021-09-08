@@ -42,9 +42,9 @@ def group_texts(examples):
     return result
 
 def frankenstein(implantee, donor, layer_nums):
-    new_state_dict = implantee.state_dict().copy()
-    donor_state_dict = donor.state_dict().copy()
-    monster = copy.copy(implantee)
+    new_state_dict = copy.deepcopy(implantee.state_dict())
+    donor_state_dict = copy.deepcopy(donor.state_dict())
+    monster = copy.deepcopy(implantee)
     for layer_num in layer_nums:
         keys = [key for key in implantee.state_dict().keys()
                 if key.startswith(f'transformer.h.{layer_num}')
