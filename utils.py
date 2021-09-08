@@ -70,7 +70,7 @@ def predict_next(model, sequence, tokenizer, num_preds=3):
     probs = F.softmax(filtered_next_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    predictions = ['{0:.3}:\t{1}\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(num_preds)]
+    predictions = ['{0:.3}:\t{1}\t\n'.format(top_probs[i]+0.001, tokenizer.decode(top_tokens[i])) for i in range(num_preds)]
     string = ''
     for p in predictions:
         string += p
