@@ -70,7 +70,10 @@ def predict_next(model, sequence, tokenizer):
     probs = F.softmax(filtered_next_token_logits, dim=-1)
     top_tokens = probs.sort()[1][-1].flip(-1)[0:5]
     top_probs = probs.sort()[0][-1].flip(-1)[0:5]
-    predictions = ['{2:.3}:\t{0}{1}'.format(sequence, tokenizer.decode(top_tokens[i]), top_probs[i]) for i in range(5)]
+    predictions = ['{0:.3}:\t{1}\n'.format(top_probs[i], tokenizer.decode(top_tokens[i])) for i in range(5)]
+    string = ''
+    for p in predictions:
+        string += p
     return predictions
 
 def mlm(model, sequence, tokenizer):
