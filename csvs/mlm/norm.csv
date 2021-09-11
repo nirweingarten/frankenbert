@@ -1,0 +1,177 @@
+,web,wiki,shakespeare
+"Make <mask>, there is no time","0.284:	 it	
+0.28:	 sure	
+0.0407:	 up	
+0.0399:	 sense	
+0.0349:	 mistakes	
+","0.584:	 sure	
+0.148:	 it	
+0.05:	 up	
+0.0337:	 clear	
+0.016:	 no	
+","0.264:	 haste	
+0.174:	 sure	
+0.165:	 it	
+0.0314:	 good	
+0.0309:	 now	
+"
+This <mask> is very tasty,"0.156:	 recipe	
+0.145:	 one	
+0.143:	 dish	
+0.0465:	 bread	
+0.0399:	 sauce	
+","0.159:	 dish	
+0.132:	 one	
+0.0714:	 recipe	
+0.0652:	 sauce	
+0.038:	 bread	
+","0.22:	 dish	
+0.107:	 one	
+0.0557:	 bread	
+0.0541:	 meal	
+0.0428:	 recipe	
+"
+This fruit is very <mask>,"0.15:	 tasty	
+0.112:	 good	
+0.0916:	 special	
+0.0814:	 delicious	
+0.0528:	 sweet	
+","0.0924:	 tasty	
+0.0906:	 delicious	
+0.0632:	 rare	
+0.0602:	 special	
+0.0505:	 expensive	
+","0.267:	 ripe	
+0.155:	 sweet	
+0.0579:	 tasty	
+0.0554:	 delicious	
+0.0347:	 bitter	
+"
+I wish I were a <mask>,"0.0791:	 robot	
+0.0662:	 doctor	
+0.0638:	 hero	
+0.0568:	 fan	
+0.0491:	 man	
+","0.144:	</s>	
+0.123:	 ""	
+0.0426:	 fan	
+0.0401:	.	
+0.0396:	 man	
+","0.0938:	 man	
+0.0713:	 king	
+0.0588:	 god	
+0.0497:	 boy	
+0.0423:	 prince	
+"
+I wish I <mask> a fish,"0.809:	 had	
+0.0733:	 were	
+0.046:	 was	
+0.00989:	 wanted	
+0.00892:	 saw	
+","0.629:	 had	
+0.196:	 was	
+0.13:	 were	
+0.00808:	 wanted	
+0.00512:	 knew	
+","0.498:	 had	
+0.368:	 were	
+0.0585:	 was	
+0.0204:	'd	
+0.0115:	 saw	
+"
+I wish I were <mask> fish,"0.652:	 a	
+0.0994:	 to	
+0.029:	 more	
+0.0275:	 bigger	
+0.0254:	 the	
+","0.204:	 alive	
+0.0927:	.	
+0.0819:	 better	
+0.0761:	 to	
+0.0625:	 a	
+","0.703:	 a	
+0.0721:	 to	
+0.0305:	 the	
+0.0283:	 more	
+0.0261:	 bigger	
+"
+The rain in <mask> falls mainly on the plain,"0.134:	 London	
+0.0669:	 Britain	
+0.0603:	 Bangladesh	
+0.0478:	 Barcelona	
+0.0395:	 Spain	
+","0.153:	 Britain	
+0.118:	 London	
+0.0631:	 Kent	
+0.0425:	 August	
+0.0408:	 England	
+","0.149:	 London	
+0.0545:	 summer	
+0.0542:	 Britain	
+0.046:	 England	
+0.0441:	 winter	
+"
+The rain in spain falls mainly on the <mask>,"0.0894:	 trees	
+0.0857:	 farmers	
+0.0853:	 poor	
+0.0429:	 wind	
+0.036:	 farmer	
+","0.308:	.	
+0.109:	 poor	
+0.0565:	 roofs	
+0.0531:	 roof	
+0.0468:	 trees	
+","0.108:	 ground	
+0.106:	 trees	
+0.0889:	 wind	
+0.052:	 roof	
+0.0442:	 sky	
+"
+The rain in spain falls mainly on <mask> plain,"0.679:	 the	
+0.0654:	 a	
+0.0429:	 flood	
+0.031:	 coastal	
+0.0206:	 salt	
+","0.418:	 the	
+0.0514:	 a	
+0.0403:	 agriculture	
+0.0379:	 farmland	
+0.0355:	 land	
+","0.892:	 the	
+0.0578:	 a	
+0.0198:	 this	
+0.00573:	 flood	
+0.00389:	 sea	
+"
+The rain in spain falls mainly <mask> the plain,"0.451:	 on	
+0.206:	 in	
+0.187:	 from	
+0.0454:	 over	
+0.0283:	 to	
+","0.372:	 on	
+0.233:	 in	
+0.143:	 from	
+0.0764:	 over	
+0.0398:	 along	
+","0.322:	 on	
+0.285:	 in	
+0.153:	 from	
+0.1:	 to	
+0.0285:	 over	
+"
+The rain <mask> spain falls mainly on the plain,"0.578:	 and	
+0.115:	 of	
+0.0663:	 on	
+0.0428:	 or	
+0.034:	 that	
+","0.722:	 and	
+0.0621:	 of	
+0.0607:	 on	
+0.0428:	 or	
+0.0205:	 that	
+","0.544:	 and	
+0.101:	 of	
+0.0848:	 the	
+0.0613:	 that	
+0.0297:	 on	
+"
